@@ -1,64 +1,69 @@
 <html>
 
 <head>
+    <title>Twidder</title>
     <link href="client.css" type="text/css" rel="stylesheet">
     <script src="client.js" type="text/javascript"></script>
     <script src="serverstub.js" type="text/javascript"></script>
-    <title>Twidder</title>
-</head>
-
-<body>
-    <div class="container">
-        <div class="logo-slogan"></div>
-        <div class="login-signup">
-            <div class="login">
-                <form>
-                    <label for="login-email">Email</label>
-                    <input type="text" id="login-email" name="login-email">
-                    <br>
-                    <label for="login-password">Password</label>
-                    <input type="text" id="login-password" name="login-password">
-                </form>
-                <div class="login-button">
-                    <button type="button">Login</button>
+    <script id="welcome-view" type="text/view">
+        <div class="container">
+            <div class="logo-slogan"></div>
+            <div class="login-signup">
+                <div class="login">
+                    <form>
+                        <label for="login-email">Email</label>
+                        <input type="text" id="login-email" name="login-email">
+                        <br>
+                        <label for="login-password">Password</label>
+                        <input type="text" id="login-password" name="login-password">
+                    </form>
+                    <div class="login-button">
+                        <button type="button">Login</button>
+                    </div>
                 </div>
-            </div>
-            <div class="signup">
-                <h2>Sign up here</h2>
-                <form>
-                    <label for="fname">First name</label>
-                    <input type="text" id="fname" name="fname">
-                    <br>
-                    <label for="sname">Family name</label>
-                    <input type="text" id="sname" name="sname">
-                    <br>
-                    <label for="gender" id="gender">Gender</label>
-                    <select name="gender" id="gender">
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                    </select>
-                    <br>
-                    <label for="city">City</label>
-                    <input type="text" id="city" name="city">
-                    <br>
-                    <label for="Country">Country</label>
-                    <input type="text" id="country" name="country">
-                    <br>
-                    <label for="email">Email</label>
-                    <input type="text" id="email" name="email">
-                    <label for="password">Password</label>
-                    <input type="text" id="password" name="password">
-                    <br>
-                    <label for="repeat-password">Repeat</label>
-                    <input type="text" id="repeat-password" name="repeat-password">
-                </form>
-                <div class="signup-button">
-                    <button type="button">Signup</button>
+                <div class="signup">
+                    <h2>Sign up here</h2>
+                    <form>
+                        <label for="fname">First name</label>
+                        <input type="text" id="fname" name="fname">
+                        <br>
+                        <label for="sname">Family name</label>
+                        <input type="text" id="sname" name="sname">
+                        <br>
+                        <label for="gender" id="gender">Gender</label>
+                        <select name="gender" id="gender">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <br>
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="city">
+                        <br>
+                        <label for="Country">Country</label>
+                        <input type="text" id="country" name="country">
+                        <br>
+                        <label for="email">Email</label>
+                        <input type="text" id="email" name="email">
+                        <label for="password">Password</label>
+                        <input type="text" id="password" name="password">
+                        <br>
+                        <label for="repeat-password">Repeat</label>
+                        <input type="text" id="repeat-password" name="repeat-password">
+                    </form>
+                    <div class="signup-button">
+                        <button type="button">Signup</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </script>
+    <script id="profile-view" type="text/view">
+        
+    </script>
+</head>
+
+<body>
 </body>
 
 </html>
