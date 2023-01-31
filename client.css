@@ -40,7 +40,7 @@ body {
     border: 1px solid black;
 }
 
-.login-button {
+.login-button-container {
     display: flex;
     justify-content: flex-end;
     margin-right: 10px;
@@ -57,20 +57,30 @@ body {
     border: 1px solid black;
 }
 
+.label-input-container {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
 .signup-button {
     display: flex;
     justify-content: flex-end;
     margin-right: 10px;
-    margin-top: -15;
 }
 
-form {
-    text-align: right;
-    margin-right: 10px;
+label {
+    width: 40%;
+    text-align: left;
+}
+
+input {
+    width: 50%;
 }
 
 select {
-    width: 61%
+    width: 50%
 }
 
 h2 {
