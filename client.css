@@ -5,13 +5,64 @@ body {
     background-color: #1e81b0;
 }
 
+
+/* profile-view */
+
+.tab-container {
+    height: 75px;
+    width: 1000px;
+    background-color: white;
+    margin-top: 50px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: flex-end; 
+    align-items: center;
+    border-radius: 2px;
+    border: 1px solid black;
+}
+
+.tab {
+    font-size: 26px;
+    width: 150px;
+    height: 50px;
+    margin-right: 15px;
+    border-radius: 5px;
+    background-color: whitesmoke;
+    border: 1px solid black;
+}
+
+.home-container {
+    width: 1000px;
+    height: 500px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.info-container {
+    border: 1px solid black;
+    background-color: white;
+    width: 385px;
+    height: 500px;
+    border-radius: 2px;
+}
+
+.wall-container {
+    border: 1px solid black;
+    background-color: white;
+    width: 600px;
+    height: 500px;
+    border-radius: 2px;
+}
+
+
+/* welcome-view */
+
 .container {
     width: 600px;
     height: 400px;
     margin-top: 100px;
     display: flex;
     justify-content: space-between;
-    gap: 10px;
 }
 
 .logo-slogan {
@@ -40,12 +91,6 @@ body {
     border: 1px solid black;
 }
 
-.login-button-container {
-    display: flex;
-    justify-content: flex-end;
-    margin-right: 10px;
-}
-
 /* Signup Square */
 .signup {
     height: 250px;
@@ -64,10 +109,14 @@ body {
     padding-right: 10px;
 }
 
-.signup-button {
+.submit-container {
     display: flex;
     justify-content: flex-end;
     margin-right: 10px;
+}
+
+#submit-button {
+    width: 60px;
 }
 
 label {
@@ -80,7 +129,7 @@ input {
 }
 
 select {
-    width: 50%
+    width: 53%
 }
 
 h2 {

@@ -10,6 +10,8 @@ displayView = function() {
     else {
         rootBody.innerHTML = welcomeView.innerHTML;
     }
+
+    // rootBody.innerHTML = profileView.innerHTML; 
 }
 
 window.onload = function() {
@@ -17,41 +19,37 @@ window.onload = function() {
     displayView();
 }
 
-function handleLogin() {
+function handleLogin(formData) {
     // code is executed when submitting login info
-
     // input from form
-    let email = document.forms["login-form"]["email"].value;
-    let passwd = document.forms["login-form"]["password"].value;
+    let email = formData.login_email.value;
+    let password = formData.login_password.value;
 
     // error-handling
 
     // server-side signin
-    let { success, message, data } = serverstub.signin(email, passwd);
-    
-    // if successful add data as token
-    if (data) {
-        window.localStorage.setItem("token", data);
-        displayView();
-    }
+    let { success, message} = serverstub.signIn(email, password);
+
+    // display message
+    Console.log(message);
+    displayView();
 }
 
-function handleSubmit() {
+function handleSubmit(formData) {
     // code is executed when submitting signup info
-
     // input from form
     let userData = {
-        'email': document.form["singup-form"]["email"].value,
-        'password': document.forms["signup-form"]["password"].value,
-        'firstname': document.forms["singup-form"]["f-name"].value,
-        'familyname': document.forms["signup-form"]["s-name"].value,
-        'gender': document.forms["singup-form"]["gender"].value,
-        'city': document.forms["singup-form"]["city"].value,
-        'country': document.forms["singup-form"]["country"].value
+        'email': formData.email.value,
+        'password': formData.password.value,
+        'firstname': formData.first.value,
+        'familyname': formData.second.value,
+        'gender': formData.gender.value,
+        'city': formData.city.value,
+        'country': formData.country.value
     }
 
-    // error handling
-    
     // server-side signup
     let {success, message} = serverstub.signUp(userData);
+
+    window.alert(message);
 }
