@@ -11,29 +11,31 @@
         <div class="logo-slogan"></div>
         <div class="login-signup">
           <div class="login">
+            <!-- login form -->
             <form id="login-form" onsubmit="handleLogin(this);return false;">
               <div class="label-input-container">
-                  <label for="login_email">Email</label>
-                  <input type="text" id="login_email" name="login_email" />
+                <label for="login_email">Email</label>
+                <input type="text" id="login_email" name="login_email" />
               </div>
               <div class="label-input-container">
-                  <label for="login_password">Password</label>
-                  <input type="text" id="login_password" name="login_password" />
+                <label for="login_password">Password</label>
+                <input type="text" id="login_password" name="login_password" />
               </div>
               <div class="submit-container">
-                <input type="submit" value="Login" id="submit-button">
+                <input type="submit" value="Login" id="submit-button" />
               </div>
             </form>
           </div>
           <div class="signup">
+            <!-- signup form -->
             <form id="singup-form" onsubmit="handleSubmit(this);return false;">
               <div class="label-input-container">
                 <label for="first">First name</label>
-                <input type="text" id="first" name="first" />
+                <input type="text" id="first" name="first" required />
               </div>
               <div class="label-input-container">
                 <label for="second">Family name</label>
-                <input type="text" id="second" name="second" />
+                <input type="text" id="second" name="second" required />
               </div>
               <div class="label-input-container">
                 <label for="gender" id="gender">Gender</label>
@@ -45,30 +47,27 @@
               </div>
               <div class="label-input-container">
                 <label for="city">City</label>
-                <input type="text" id="city" name="city" />
+                <input type="text" id="city" name="city" required />
               </div>
               <div class="label-input-container">
                 <label for="Country">Country</label>
-                <input type="text" id="country" name="country" />
+                <input type="text" id="country" name="country" required />
               </div>
               <div class="label-input-container">
                 <label for="email">Email</label>
-                <input type="text" id="email" name="email" />
+                <input type="email" id="email" name="email" required />
               </div>
               <div class="label-input-container">
                 <label for="password">Password</label>
-                <input type="text" id="password" name="password" />
+                <input type="text" id="password" name="password" minlength="5" required />
               </div>
               <div class="label-input-container">
                 <label for="repeat-password">Repeat</label>
                 <input
-                  type="text"
-                  id="repeat-password"
-                  name="repeat-password"
-                />
+                  type="text" id="repeat-password" name="repeat-password" required />
               </div>
               <div class="submit-container">
-                <input type="submit" value="SignUp" id="submit-button">
+                <input type="submit" value="SignUp" id="submit-button" />
               </div>
             </form>
           </div>
@@ -80,13 +79,26 @@
     <script id="profile-view" type="text/html">
       <div class="profile-container">
         <div class="tab-container">
-          <button class="tab" id="home">Home</button>
-          <button class="tab" id="browse">Browse</button>
-          <button class="tab" id="account">Account</button>
+          <div class="left-tab">
+            <button class="tab" id="logout" onclick="logOut()">Log out</button>
+          </div>
+          <div class="right-tab">
+            <button class="tab" id="home" onclick="tabSwitch('wall-container')">Home</button>
+            <button class="tab" id="browse" onclick="tabSwitch('browse-container')">Browse</button>
+            <button class="tab" id="account">Account</button>
+          </div>
         </div>
         <div class="home-container">
           <div class="info-container"></div>
-          <div class="wall-container"></div>
+          <div class="wall-container" id="wall-con">
+            <div class="input-area">
+              <form>
+                
+              </form>
+            </div>
+          </div>
+          <div class="browse-container" id="browse-con"></div>
+          <div class="account-container" id="account-con"></div>
         </div>
       </div>
     </script>
