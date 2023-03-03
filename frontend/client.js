@@ -28,10 +28,12 @@ function handleLogin(formData) {
     // error-handling
 
     // server-side signin
-    let { success, message} = serverstub.signIn(email, password);
+    let { success, message, data} = serverstub.signIn(email, password);
 
     // display message
-    Console.log(message);
+
+    // set data as token, change view
+    window.localStorage.setItem("token", data);
     displayView();
 }
 
@@ -48,8 +50,38 @@ function handleSubmit(formData) {
         'country': formData.country.value
     }
 
+    // validate format email
+    // const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // if (!regex.test(userData["email"])) {
+    //     return false;
+    // }
+
+    // validate password likeness
+    if (userData["password"] != userData["repeat-password"]) {
+        return false;
+    }
+
+    // validate password length
+    if (userData["password"].length < 5) {
+        return false;
+    }
+
     // server-side signup
     let {success, message} = serverstub.signUp(userData);
 
     window.alert(message);
+}
+
+function tabSwitch(tab) {
+    let homeContent = document.getElementsByClassName("home-container");
+    for (let i = 0; homeContent.length < i; i++) {
+        homeContent[i].style.display = "none";    
+    }
+
+    document.getElementById(tab).style.display = "flex";
+}
+
+function logOut() {
+    localStorage.removeItem("token");
+    displayView();
 }
