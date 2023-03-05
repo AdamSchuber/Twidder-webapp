@@ -6,6 +6,7 @@ displayView = function() {
 
     if (window.localStorage.getItem("token")) {
         rootBody.innerHTML = profileView.innerHTML; 
+        tabSwitch("home")
     }
     else {
         rootBody.innerHTML = welcomeView.innerHTML;
@@ -50,12 +51,6 @@ function handleSubmit(formData) {
         'country': formData.country.value
     }
 
-    // validate format email
-    // const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // if (!regex.test(userData["email"])) {
-    //     return false;
-    // }
-
     // validate password likeness
     if (userData["password"] != userData["repeat-password"]) {
         return false;
@@ -72,16 +67,40 @@ function handleSubmit(formData) {
     window.alert(message);
 }
 
-function tabSwitch(tab) {
-    let homeContent = document.getElementsByClassName("home-container");
-    for (let i = 0; homeContent.length < i; i++) {
-        homeContent[i].style.display = "none";    
-    }
+function postMessage(formData) {
 
+}
+
+function refreshMessageBoard() {
+
+}
+
+function displayInfo() {
+    // let { success, message, data } = serverstub.getUserDataByToken(window.localStorage.getItem("token"));
+    // let infoDiv = document.getElementById("info");
+
+    // let html = "";
+    // Object.keys(data).map(key => {
+    //     html += "<div class='info-pair'>";
+    //     html += "<p>" + key + ": " + data[key] + "<p/>";
+    // });
+
+    // infoDiv.innerhtml = html;
+    
+    // return false;
+}
+
+function tabSwitch(tab) {
+    document.getElementById("home").style.display = "none";
+    document.getElementById("browse").style.display = "none";
+    document.getElementById("account").style.display = "none";
     document.getElementById(tab).style.display = "flex";
+    displayInfo();
+    refreshMessageBoard();
 }
 
 function logOut() {
+    let { success, message } = serverstub.signOut(window.localStorage.getItem("token"));
     localStorage.removeItem("token");
     displayView();
 }

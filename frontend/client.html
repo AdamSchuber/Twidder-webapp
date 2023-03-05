@@ -78,28 +78,38 @@
     <!-- Profile View -->
     <script id="profile-view" type="text/html">
       <div class="profile-container">
-        <div class="tab-container">
+        <div class="tab-header">
           <div class="left-tab">
             <button class="tab" id="logout" onclick="logOut()">Log out</button>
           </div>
           <div class="right-tab">
-            <button class="tab" id="home" onclick="tabSwitch('wall-container')">Home</button>
-            <button class="tab" id="browse" onclick="tabSwitch('browse-container')">Browse</button>
-            <button class="tab" id="account">Account</button>
+            <button class="tab" id="home-button" onclick="tabSwitch('home')">Home</button>
+            <button class="tab" id="browse-button" onclick="tabSwitch('browse')">Browse</button>
+            <button class="tab" id="account-button" onclick="tabSwitch('account')">Account</button>
           </div>
         </div>
-        <div class="home-container">
-          <div class="info-container"></div>
-          <div class="wall-container" id="wall-con">
-            <div class="input-area">
-              <form>
-                
-              </form>
+        <div class="tab-container">
+          <!-- home view -->
+          <div id="home" class="home-container">
+            <div id="info" class="info-container"></div>
+            <div class="wall-container" id="wall">
+              <form id="wall-form" onsubmit="postMessage(this);return false;">
+                  <div class="input-area">
+                  <input type="text" id="message-box" name="message-box" />
+                  <input type="submit" id="message-box-submit" value="Post Message" />
+                  </div>
+                </form>
+              <div id="feed"></div>
+              <div class="refresh-container">
+                <button id="refresh" onclick="refreshMessageBoard()">Refresh</button>
+              </div>
             </div>
+            <!-- browse view -->
+            <div class="browse-container" id="browse">hej</div>
+            <!-- account view -->
+            <div class="account-container" id="account">hej</div>
           </div>
-          <div class="browse-container" id="browse-con"></div>
-          <div class="account-container" id="account-con"></div>
-        </div>
+        </div>  
       </div>
     </script>
   </head>
