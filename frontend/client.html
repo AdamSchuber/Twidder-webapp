@@ -19,16 +19,21 @@
               </div>
               <div class="label-input-container">
                 <label for="login_password">Password</label>
-                <input type="text" id="login_password" name="login_password" />
+                <input
+                  type="password"
+                  id="login_password"
+                  name="login_password"
+                />
               </div>
               <div class="submit-container">
                 <input type="submit" value="Login" id="submit-button" />
               </div>
+              <div id="login-error"></div>
             </form>
           </div>
           <div class="signup">
             <!-- signup form -->
-            <form id="singup-form" onsubmit="handleSubmit(this);return false;">
+            <form id="singup-form" onsubmit="handleSignUp(this);return false;">
               <div class="label-input-container">
                 <label for="first">First name</label>
                 <input type="text" id="first" name="first" required />
@@ -59,16 +64,28 @@
               </div>
               <div class="label-input-container">
                 <label for="password">Password</label>
-                <input type="text" id="password" name="password" minlength="5" required />
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  minlength="5"
+                  required
+                />
               </div>
               <div class="label-input-container">
-                <label for="repeat-password">Repeat</label>
+                <label for="repeat">Repeat</label>
                 <input
-                  type="text" id="repeat-password" name="repeat-password" required />
+                  type="password"
+                  id="repeat"
+                  name="repeat"
+                  minlength="5"
+                  required
+                />
               </div>
               <div class="submit-container">
                 <input type="submit" value="SignUp" id="submit-button" />
               </div>
+              <div id="signup-error"></div>
             </form>
           </div>
         </div>
@@ -83,33 +100,114 @@
             <button class="tab" id="logout" onclick="logOut()">Log out</button>
           </div>
           <div class="right-tab">
-            <button class="tab" id="home-button" onclick="tabSwitch('home')">Home</button>
-            <button class="tab" id="browse-button" onclick="tabSwitch('browse')">Browse</button>
-            <button class="tab" id="account-button" onclick="tabSwitch('account')">Account</button>
+            <button class="tab" id="home-button" onclick="tabSwitch('home')">
+              Home
+            </button>
+            <button
+              class="tab"
+              id="browse-button"
+              onclick="tabSwitch('browse')"
+            >
+              Browse
+            </button>
+            <button
+              class="tab"
+              id="account-button"
+              onclick="tabSwitch('account')"
+            >
+              Account
+            </button>
           </div>
         </div>
-        <div class="tab-container">
-          <!-- home view -->
-          <div id="home" class="home-container">
-            <div id="info" class="info-container"></div>
-            <div class="wall-container" id="wall">
-              <form id="wall-form" onsubmit="postMessage(this);return false;">
-                  <div class="input-area">
-                  <input type="text" id="message-box" name="message-box" />
-                  <input type="submit" id="message-box-submit" value="Post Message" />
-                  </div>
-                </form>
-              <div id="feed"></div>
-              <div class="refresh-container">
-                <button id="refresh" onclick="refreshMessageBoard()">Refresh</button>
+        <!-- home view -->
+        <div id="home" class="home-container">
+          <div id="info" class="info-container"></div>
+          <div class="wall-container" id="wall">
+            <form id="wall-form" onsubmit="postMessage(this);return false;">
+              <div class="input-area">
+                <input type="text" id="message_box" name="message_box" />
+                <input
+                  type="submit"
+                  id="message_box_submit"
+                  value="Post Message"
+                />
               </div>
+            </form>
+            <div id="feed"></div>
+            <div class="refresh-container">
+              <button id="refresh" onclick="refreshMessageBoard()">
+                Refresh
+              </button>
             </div>
-            <!-- browse view -->
-            <div class="browse-container" id="browse">hej</div>
-            <!-- account view -->
-            <div class="account-container" id="account">hej</div>
           </div>
-        </div>  
+        </div>
+        <!-- browse view -->
+        <div class="home-container" id="browse">
+          <div id="user-info" class="info-container"></div>
+          <div class="wall-container" id="wall">
+            <form id="browse-search" onsubmit="getUserProfile(this);return false;">
+              <div class="input-area">
+                <input type="text" id="user_box" name="user_box" />
+                <input
+                  type="submit"
+                  id="user_box_submit"
+                  value="Search User"
+                />
+              </div>
+            </form>
+            <form id="browse-message" onsubmit="postMessageToUser(this);return false;">
+              <div class="input-area">
+                <input type="text" id="message_user_box" name="message_user_box" />
+                <input
+                  type="submit"
+                  id="message_user_box_submit"
+                  value="Post Message"
+                />
+              </div>
+            </form>
+            <div id="user-feed"></div>
+          </div>
+        </div>
+        <!-- account vi
+            ew -->
+        <div class="tab-container" id="account">
+          <form
+            id="change-password"
+            onsubmit="handleChangePassword(this);return false;"
+          >
+            <div class="label-input-container">
+              <label for="old_password">Old Password</label>
+              <input
+                type="password"
+                id="old_password"
+                name="old_password"
+                required
+              />
+            </div>
+            <div class="label-input-container">
+              <label for="new_password">New Password</label>
+              <input
+                type="password"
+                id="new_password"
+                name="new_password"
+                required
+              />
+            </div>
+            <div class="label-input-container">
+              <label for="repeat_new">Repeat</label>
+              <input
+                type="password"
+                id="repeat_new"
+                name="repeat_new"
+                required
+              />
+            </div>
+            <div class="submit-container">
+              <input type="submit" value="Change Password" id="change-button" />
+            </div>
+          </form>
+          <div id="account-message"></div>
+        </div>
       </div>
     </script>
   </head>
