@@ -1,29 +1,36 @@
 from flask import Flask, request, jsonify
-from flask_sock import Sock
+from flask_socketio import SocketIO, send, emit, disconnect
+from email_validator import validate_email, EmailNotValidError
 import database_helper
 import secrets
 
 # contain server-side remote procedures
-
 app = Flask(__name__, static_url_path="", static_folder="static")
-sock = Sock(app)
-
 database_helper.init_db(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
+# sid = None
+sockets = dict()
+
+@socketio.on('addSession')
+def handle_add(email):
+    try:
+        print("Connection established")
+        print("socket id: ", request.sid)
+        sid = request.sid
+        print("user is added as socket: ", email)
+        sockets[email] = sid
+    except:
+        print("Connection failed")
 
 @app.route("/", methods=['GET'])
 def root():
     return app.send_static_file("client.html"), 200
 
-@sock.route('/echo')
-def echo_socket(ws):
-    while not ws.closed:
-        data = ws.receive()
-        ws.send(data)
-
 @app.teardown_request
 def teardown(exception):
     # close db connection
     database_helper.close_db()
+    
 
 @app.route('/sign-in', methods=['POST'])
 def sign_in():
@@ -39,17 +46,27 @@ def sign_in():
             token = secrets.token_urlsafe(16)
             # add user as logged in with token
             database_helper.add_login(email, token)
+            if email in sockets:
+                # socketio.emit('newLogin', {"email": email}, broadcast=True)
+                print("disconnecting old socket: ", sockets[email])
+                socketio.server.disconnect(sockets[email])  
             return jsonify(token), 200
         # error wrong email or password
         return "", 404
-    # error no user with that email
+    # email is invalid
     return "", 400
-
-
 
 @app.route('/sign-up', methods=['POST'])
 def sign_up():
     data = request.get_json()
+    # validate email
+    email = data["email"]
+    try:
+        valid = validate_email(email)
+        email = valid.email
+    except EmailNotValidError as e:
+        # email is not valid
+        return "", 401
     # check if valid input
     if is_valid(data):
         # check if user exists
@@ -83,13 +100,10 @@ def sign_out():
     if token is not None:
         # remove logged-in user
         database_helper.remove_login(token)
-        users = database_helper.get_all_login()
-        print("logged in users: ", users)
         return "", 200
     return "", 404
 
-
-@app.route('/change-password', methods=['POST'])
+@app.route('/change-password', methods=['PUT'])
 def change_password():
     # get token
     data = request.get_json()
@@ -115,7 +129,6 @@ def change_password():
         return "", 403
     # user not logged in
     return "", 401
-
 
 @app.route('/get-user-data-by-token', methods=['GET'])
 def get_user_data_by_token():
@@ -197,3 +210,6 @@ def post_message():
         return "", 404
     # user not logged in
     return "", 401
+
+if __name__ == '__main__':
+    socketio.run(app)

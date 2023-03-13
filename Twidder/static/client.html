@@ -4,6 +4,7 @@
     <title>Twidder</title>
     <link href="client.css" type="text/css" rel="stylesheet" />
     <script src="client.js" type="text/javascript"></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script src="serverstub.js" type="text/javascript"></script>
     <!-- Welcome View -->
     <script id="welcome-view" type="text/html">
@@ -125,7 +126,13 @@
           <div class="wall-container" id="wall">
             <form id="wall-form" onsubmit="postMessage(this);return false;">
               <div class="input-area">
-                <input type="text" id="message_box" name="message_box" />
+                <input
+                  type="text"
+                  id="message_box"
+                  ondrop="drop(event)"
+                  ondragover="allowDrop(event)"
+                  name="message_box"
+                />
                 <input
                   type="submit"
                   id="message_box_submit"
@@ -145,7 +152,10 @@
         <div class="home-container" id="browse">
           <div id="user-info" class="info-container"></div>
           <div class="wall-container" id="wall">
-            <form id="browse-search" onsubmit="getUserProfile(this);return false;">
+            <form
+              id="browse-search"
+              onsubmit="getUserProfile(this);return false;"
+            >
               <div class="input-area">
                 <input type="text" id="user_box" name="user_box" />
                 <input
@@ -155,9 +165,18 @@
                 />
               </div>
             </form>
-            <form id="browse-message" onsubmit="postMessageToUser(this);return false;">
+            <form
+              id="browse-message"
+              onsubmit="postMessageToUser(this);return false;"
+            >
               <div class="input-area">
-                <input type="text" id="message_user_box" name="message_user_box" />
+                <input
+                  type="text"
+                  ondrop="drop(event)"
+                  ondragover="allowDrop(event)"
+                  id="message_user_box"
+                  name="message_user_box"
+                />
                 <input
                   type="submit"
                   id="message_user_box_submit"

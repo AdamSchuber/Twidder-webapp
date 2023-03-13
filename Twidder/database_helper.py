@@ -45,6 +45,8 @@ def add_user(email, firstname, familyname, gender, city, country, password):
 def get_user(email):
     return query_db('SELECT * FROM users WHERE email = ?', [email] , one=True)
 
+
+
 def get_user_token(token):
     return query_db('SELECT * FROM users WHERE email = ' + token, [] , one=True)
 
@@ -78,4 +80,3 @@ def add_message(to_email, from_email, message):
 # gets all messages for a user
 def get_messages(email):
     return query_db('SELECT * FROM messages WHERE toEmail = ?', [email])
-

@@ -1,3 +1,4 @@
+let socket = null;
 
 // the code required to display a view
 displayView = function() {
@@ -18,6 +19,30 @@ window.onload = function() {
     displayView();
 }
 
+function ws_connect() {
+    socket = io.connect('http://localhost:5000', {transports: ['websocket']});
+    socket.on('connect', function() {
+        console.log('WebSocket connection established!');
+    });
+    
+    socket.emit('addSession', localStorage.getItem("email"));
+
+    socket.on('newLogin', function(data) {
+        console.log('new login: ' + data["email"]);
+        if (data["email"] == window.localStorage.getItem('email')) {
+            console.log("loggin out...")
+            socket.disconnect();
+            logOut();
+        }
+    });
+
+    socket.on('disconnect', function() {
+        console.log('WebSocket connection lost!');
+        socket.disconnect();
+        logOut();
+    });
+}
+
 // code is executed when submitting login info
 function handleLogin(formData) {
     let errorDiv = document.getElementById("login-error");
@@ -26,6 +51,7 @@ function handleLogin(formData) {
     let email = formData.login_email.value;
     let password = formData.login_password.value;
     let request = new XMLHttpRequest();
+    window.localStorage.setItem('email', email);
     // send request
     request.open("POST", "/sign-in", true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -33,8 +59,8 @@ function handleLogin(formData) {
     // send request to server
     request.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            // console.log("login success");
             window.localStorage.setItem("token", this.responseText);
+            ws_connect();
             displayView();
         }
         else {
@@ -74,7 +100,7 @@ function handleSignUp(formData) {
         }
         else {
             if (this.status == 400) {
-                errorDiv.innerHTML = "Data is invalid";
+                errorDiv.innerHTML = "Input is invalid";
             }
             else if (this.status == 409) {
                 errorDiv.innerHTML = "User already exists";
@@ -100,7 +126,6 @@ function tabSwitch(tab) {
     if (window.localStorage.getItem("currentUser") != null) {
         window.localStorage.removeItem("currentUser");
     }
-
     // hide all tabs
     document.getElementById("home").style.display = "none";
     document.getElementById("browse").style.display = "none";
@@ -120,11 +145,8 @@ function logOut() {
     // request to server
     request.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            window.localStorage.removeItem("token");
-            if (window.localStorage.getItem("currentUser") != null) {
-                window.localStorage.removeItem("currentUser");
-            }
-            displayView();
+            window.localStorage.clear();
+            document.getElementById('body').innerHTML = document.getElementById("welcome-view").innerHTML;
         }
     }
 }
@@ -139,7 +161,7 @@ function handleChangePassword(formData) {
     if (errorDiv.innerHTML != "") {
         let request = new XMLHttpRequest();
         // send request
-        request.open("POST", "/change-password", true);
+        request.open("PUT", "/change-password", true);
         request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         request.setRequestHeader("Authorization", localStorage.getItem('token'));
         request.send(JSON.stringify({"oldPassword": oldPassword, "newPassword": newPassword}));
@@ -239,9 +261,9 @@ function refreshMessageBoard() {
             let data = JSON.parse(this.responseText);
             console.log(data);
             for (let i = 0; i < data.length; i++) {
-                messagesHTML += "<div class='messages-pair'>";
+                messagesHTML += "<div id='wallpost-" + i + "' class='messages-pair' draggable='true' ondragstart='drag(event)'>";
                 messagesHTML += "<p>" + data[data.length - i - 1][0] + "</p>";
-                messagesHTML += "<p>" + data[data.length - i - 1][2] + "</p>";
+                messagesHTML += "<p id='message_content'>" + data[data.length - i - 1][2] + "</p>";
                 messagesHTML += "</div>";
             }
         }
@@ -368,9 +390,9 @@ function getUserMessageWall(email) {
         if (this.readyState == 4 && this.status == 200) {
             let data = JSON.parse(this.responseText);
             for (let i = 0; i < data.length; i++) {
-                messagesHTML += "<div class='messages-pair'>";
+                messagesHTML += "<div id='browsepost-" + i + "' class='messages-pair' draggable='true' ondragstart='drag(event)'>";
                 messagesHTML += "<p>" + data[data.length - i - 1][1] + "</p>";
-                messagesHTML += "<p>" + data[data.length - i - 1][2] + "</p>";
+                messagesHTML += "<p id='message_content'>" + data[data.length - i - 1][2] + "</p>";
                 messagesHTML += "</div>";
             }
         }
@@ -401,4 +423,19 @@ function validatePassword(password, repeat) {
     }
 
     return "";
+}
+
+// drag and drop
+function allowDrop(event) {
+    event.preventDefault();
+}
+
+function drag(event) {
+    event.dataTransfer.setData("text", event.target.id);
+}
+
+function drop(event) {
+    event.preventDefault();
+    var data = event.dataTransfer.getData("text");
+    event.target.value = document.getElementById(data).querySelector("#message_content").innerHTML;
 }
