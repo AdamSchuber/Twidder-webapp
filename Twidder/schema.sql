@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS users(
 CREATE TABLE IF NOT EXISTS loggedInUsers(
     email VARCHAR(32),
     token VARCHAR(64),
-    sid VARCHAR(64),
     PRIMARY KEY(token)
 );
 

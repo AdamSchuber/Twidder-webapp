@@ -7,7 +7,8 @@ displayView = function() {
     let profileView = document.getElementById("profile-view");
     if (window.localStorage.getItem("token")) {
         rootBody.innerHTML = profileView.innerHTML; 
-        tabSwitch("home")
+        tabSwitch("home");
+        ws_connect();
     }
     else {
         rootBody.innerHTML = welcomeView.innerHTML;
@@ -27,19 +28,10 @@ function ws_connect() {
     
     socket.emit('addSession', localStorage.getItem("email"));
 
-    socket.on('newLogin', function(data) {
-        console.log('new login: ' + data["email"]);
-        if (data["email"] == window.localStorage.getItem('email')) {
-            console.log("loggin out...")
-            socket.disconnect();
-            logOut();
-        }
-    });
-
     socket.on('disconnect', function() {
         console.log('WebSocket connection lost!');
-        socket.disconnect();
-        logOut();
+        localStorage.clear();
+        displayView();
     });
 }
 
@@ -60,7 +52,6 @@ function handleLogin(formData) {
     request.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             window.localStorage.setItem("token", this.responseText);
-            ws_connect();
             displayView();
         }
         else {
@@ -77,39 +68,57 @@ function handleSignUp(formData) {
     let password = formData.password.value;
     let repeat = formData.repeat.value;
     // validate password
-    errorDiv.innnerHTML = validatePassword(password, repeat)    
-    // input from form
-    let userData = {
-        'email': formData.email.value,
-        'password': formData.password.value,
-        'firstname': formData.first.value,
-        'familyname': formData.second.value,
-        'gender': formData.gender.value,
-        'city': formData.city.value,
-        'country': formData.country.value
-    }   
-    let request = new XMLHttpRequest();
-    // send request
-    request.open("POST", "/sign-up", true);
-    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    request.send(JSON.stringify(userData));
-    // send request to server
-    request.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            errorDiv.innerHTML = "Account created";
-        }
-        else {
-            if (this.status == 400) {
-                errorDiv.innerHTML = "Input is invalid";
+    passwordError = validatePassword(password, repeat)  
+    if (passwordError == "") {  
+        // input from form
+        let userData = {
+            'email': formData.email.value,
+            'password': formData.password.value,
+            'firstname': formData.first.value,
+            'familyname': formData.second.value,
+            'gender': formData.gender.value,
+            'city': formData.city.value,
+            'country': formData.country.value
+        }   
+        let request = new XMLHttpRequest();
+        // send request
+        request.open("POST", "/sign-up", true);
+        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        request.send(JSON.stringify(userData));
+        // send request to server
+        request.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 201) {
+                errorDiv.innerHTML = "Account created";
             }
-            else if (this.status == 409) {
-                errorDiv.innerHTML = "User already exists";
+            else {
+                if (this.status == 401) {
+                    errorDiv.innerHTML = "Input is invalid";
+                }
+                else if (this.status == 409) {
+                    errorDiv.innerHTML = "User already exists";
+                }
+                else if (this.status == 404) {
+                    errorDiv.innerHTML = "Account creation failed";
+                }  
             }
-            else if (this.status == 404) {
-                errorDiv.innerHTML = "Account creation failed";
-            }  
         }
     }
+    else {
+        errorDiv.innerHTML = passwordError;
+    }
+}
+
+// validates password
+function validatePassword(password, repeat) {
+    // validate password likeness
+    if (password != repeat) {
+        return "Passwords are different!";
+    }
+    // validate password length
+    if (password.length < 5) {
+        return "Password too short! Minimum length is 5 characters";
+    }
+    return "";
 }
 
 // switches tabs
@@ -127,10 +136,14 @@ function tabSwitch(tab) {
         window.localStorage.removeItem("currentUser");
     }
     // hide all tabs
+    document.getElementById("home-button").style.backgroundColor = "white";
+    document.getElementById("browse-button").style.backgroundColor = "white";
+    document.getElementById("account-button").style.backgroundColor = "white";
     document.getElementById("home").style.display = "none";
     document.getElementById("browse").style.display = "none";
     document.getElementById("account").style.display = "none";
     document.getElementById(tab).style.display = "flex";
+    document.getElementById(tab + "-button").style.backgroundColor = "#1e81b0";
     console.log("tab switched to " + tab);
 }
 
@@ -156,9 +169,9 @@ function handleChangePassword(formData) {
     let oldPassword = formData.old_password.value;
     let newPassword = formData.new_password.value;
     let newRepeat = formData.repeat_new.value;
-    errorDiv = validatePassword(newPassword, newRepeat);
+    let errorString = validatePassword(newPassword, newRepeat);
     
-    if (errorDiv.innerHTML != "") {
+    if (errorString == "") {
         let request = new XMLHttpRequest();
         // send request
         request.open("PUT", "/change-password", true);
@@ -168,18 +181,18 @@ function handleChangePassword(formData) {
         // request to server
         request.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                errorDiv.innerHTML = "Password changed";
-            }
-            else if (this.status == 401) {
-                errorDiv.innerHTML = "User not logged in";
-            }
-            else if (this.status == 403) {
-                errorDiv.innerHTML = "Wrong password or user dont exist";
+                errorDiv.innerHTML = "Password Changed Successfully";
             }
             else if (this.status == 404) {
+                errorDiv.innerHTML = "Old Password is Wrong";
+            }
+            else if (this.status == 401) {
                 errorDiv.innerHTML = "Password too short";
             }
         }
+    }
+    else {
+        errorDiv.innerHTML = errorString;
     }
 }
 
@@ -199,7 +212,7 @@ function postMessage(formData) {
     request.send(JSON.stringify({"message": post}));
     request.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-                getUserMessageWall();
+                refreshMessageBoard();
         }
         else if (this.status == 401) {
             messagesDiv.innerHTML = "User not logged in";
@@ -208,6 +221,7 @@ function postMessage(formData) {
             messagesDiv.innerHTML = "User not found";
         }
     }
+    refreshMessageBoard();
 }
 
 function postMessageToUser(formData) {
@@ -230,7 +244,7 @@ function postMessageToUser(formData) {
     request.send(JSON.stringify({"message": post, "email": email}));
     request.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-                refreshMessageBoard(email);
+                getUserMessageWall(email);
                 console.log("message posted");
         }
         else if (this.status == 401) {
@@ -267,8 +281,8 @@ function refreshMessageBoard() {
                 messagesHTML += "</div>";
             }
         }
-        else if (this.status == 403) {
-            messagesHTML = "messages not found";
+        else if (this.status == 401) {
+            messagesHTML = "user not logged in";
         }
         else if (this.status == 404) {
             messagesHTML = "User not found";
@@ -407,22 +421,6 @@ function getUserMessageWall(email) {
         }
         userFeedDiv.innerHTML = messagesHTML;
     }
-}
-
-
-// validates password
-function validatePassword(password, repeat) {
-    // validate password likeness
-    if (password != repeat) {
-        return "Passwords are different!";
-    }
-    
-    // validate password length
-    if (password.length < 5) {
-        return "Password too short! Minimum length is 5 characters";
-    }
-
-    return "";
 }
 
 // drag and drop

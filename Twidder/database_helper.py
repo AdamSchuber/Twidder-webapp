@@ -46,7 +46,6 @@ def get_user(email):
     return query_db('SELECT * FROM users WHERE email = ?', [email] , one=True)
 
 
-
 def get_user_token(token):
     return query_db('SELECT * FROM users WHERE email = ' + token, [] , one=True)
 
@@ -60,12 +59,16 @@ def add_login(email, token):
 
 # removes a logged in user from the db
 def remove_login(token):
-    query_db('DELETE FROM loggedInUsers WHERE token = ' + token, [])
+    query_db('DELETE FROM loggedInUsers WHERE token = ' + str(token), [], one=True)
 
 # gets a logged in user from the db
 def get_login(token):
     # this is sql injection prone
     return query_db('SELECT * FROM loggedInUsers WHERE token = ' + token, [], one=True)
+
+def get_login_email(email):
+    # this is sql injection prone
+    return query_db('SELECT * FROM loggedInUsers WHERE email = ' + email, [], one=True)
 
 def get_all_login():
     return query_db('SELECT * FROM loggedInUsers')
